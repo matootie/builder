@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "builder"
+version = "0.1.0"
+description = ""
+authors = ["matootie <matootie@icloud.com>"]
+
+[tool.poetry.scripts]
+builder = "builder.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+"discord.py" = "^1.7.3"
+aioredis = "^2.0.1"
+python-dotenv = "^0.19.2"
+
+[tool.poetry.dev-dependencies]
+black = "^21.12b0"
+pylint = "^2.12.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

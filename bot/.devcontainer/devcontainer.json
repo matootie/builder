@@ -1,0 +1,31 @@
+{
+	"name": "Builder Chatbot",
+	"runArgs": ["--init"],
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": "..",
+		"args": {
+			"VARIANT": "3.10-bullseye",
+			"NODE_VERSION": "16"
+		}
+	},
+	"settings": {
+		"python.pythonPath": ".venv/bin/python",
+		"python.languageServer": "Pylance",
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.formatting.provider": "black",
+	},
+	"extensions": [
+		"ms-python.python",
+		"ms-python.vscode-pylance"
+	],
+	// "forwardPorts": [],
+	"postCreateCommand": "poetry install",
+	"remoteUser": "vscode",
+	"features": {
+		"git": "latest",
+		"git-lfs": "latest",
+		"github-cli": "latest"
+	}
+}
