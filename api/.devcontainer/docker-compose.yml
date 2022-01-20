@@ -12,6 +12,8 @@ services:
       - ..:/workspace:cached
     command: sleep infinity
     network_mode: service:db
+    environment:
+      REDIS_URL: redis://localhost:6379
   db:
     image: redis:latest
     restart: unless-stopped

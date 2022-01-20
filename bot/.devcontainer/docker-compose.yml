@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VARIANT: 16-bullseye
+        VARIANT: "3.10-bullseye"
+        NODE_VERSION: "16"
     init: true
     volumes:
       - ..:/workspace:cached

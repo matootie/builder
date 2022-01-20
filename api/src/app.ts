@@ -20,5 +20,9 @@ app.use(
 )
 
 app.get("/hello", (_req, res) => {
-  res.status(200).send("Hello!")
+  const url = process.env.REDIS_URL ?? "No URL provided."
+  res.status(200).send({
+    message: "Hello!",
+    url,
+  })
 })
