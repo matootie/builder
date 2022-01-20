@@ -7,6 +7,7 @@ on:
     branches:
     - trunk
     paths:
+    - .github/workflows/release-bot.yml
     - bot/**
 
 jobs:
@@ -22,7 +23,7 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.10
+        python-version: "3.10"
 
       # Check if we have a valid installation of Poetry in cache.
     - name: Cache Poetry
