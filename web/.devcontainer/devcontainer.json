@@ -1,0 +1,15 @@
+{
+	"name": "Builder Web",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"extensions": [
+		"esbenp.prettier-vscode",
+		"csstools.postcss",
+		"bradlc.vscode-tailwindcss",
+		"dbaeumer.vscode-eslint",
+	],
+	"forwardPorts": [3000, 6379],
+	"postCreateCommand": "npm i",
+	"remoteUser": "node"
+}
