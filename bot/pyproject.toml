@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "builder"
 version = "0.1.0"
-description = ""
+description = "The chatbot for the Builder application. This is the software that responds to gateway events from the Discord API and lives in users Discord servers."
 authors = ["matootie <matootie@icloud.com>"]
 
 [tool.poetry.scripts]
