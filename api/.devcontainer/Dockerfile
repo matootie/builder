@@ -1,9 +1,10 @@
 ARG VARIANT=16-bullseye
 FROM --platform=arm64 mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
 
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
+# Install tools.
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -y install --no-install-recommends \
+        redis-tools
 
 # Install the AWS CLI.
 RUN mkdir "/tmp/aws" && \

@@ -17,7 +17,11 @@
     "paths": {
       "@lib/*": ["lib/*"],
       "@bin/*": ["bin/*"],
-      "@app": ["src/app"]
+      "@app": ["src/app"],
+      "@processes/*": ["src/processes/*"],
+      "@providers/*": ["src/providers/*"],
+      "@routes/*": ["src/routes/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["src/**/*", "bin/**/*", "lib/**/*.ts", "test/**/*"],
