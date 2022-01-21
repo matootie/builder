@@ -15,5 +15,6 @@ const names = Moniker.generator([Moniker.adjective, Moniker.noun], {
  */
 export function generateName(): string {
   // Choose a name from the name generator.
-  return names.choose()
+  const name: string = names.choose()
+  return name.replace(/\b\w/g, (c) => c.toUpperCase())
 }

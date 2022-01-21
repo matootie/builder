@@ -23,7 +23,8 @@ describe("When using the AWS CDK...", () => {
     await fs.mkdir(path.dirname(DUMMY_ZIP), {
       recursive: true,
     })
-    await fs.open(DUMMY_ZIP, "w")
+    const x = await fs.open(DUMMY_ZIP, "w")
+    await x.close()
   })
   // Clean up the dummy zip file created for testing purposes.
   afterAll(async () => {
