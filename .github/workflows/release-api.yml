@@ -10,6 +10,10 @@ on:
     - .github/workflows/release-api.yml
     - api/**
 
+concurrency:
+  group: ${{ github.workflow }}-staging
+  cancel-in-progress: true
+
 jobs:
   deploy:
     name: Deploy

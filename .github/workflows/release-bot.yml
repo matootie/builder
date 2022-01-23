@@ -10,6 +10,10 @@ on:
     - .github/workflows/release-bot.yml
     - bot/**
 
+concurrency:
+  group: ${{ github.workflow }}-staging
+  cancel-in-progress: true
+
 jobs:
   deploy:
     name: Deploy
