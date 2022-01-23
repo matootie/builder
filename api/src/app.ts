@@ -6,6 +6,9 @@
 import express from "express"
 import cors from "cors"
 
+// Middleware imports.
+import { errorMiddleware } from "@middlewares/error.middlewares"
+
 // Initialize the app.
 export const app = express()
 
@@ -19,10 +22,5 @@ app.use(
   }),
 )
 
-app.get("/hello", (_req, res) => {
-  const url = process.env.REDIS_URL ?? "No URL provided."
-  res.status(200).send({
-    message: "Hello!",
-    url,
-  })
-})
+// Use the error middleware.
+app.use(errorMiddleware)

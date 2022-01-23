@@ -18,6 +18,7 @@
       "@lib/*": ["lib/*"],
       "@bin/*": ["bin/*"],
       "@app": ["src/app"],
+      "@middlewares/*": ["src/middlewares/*"],
       "@processes/*": ["src/processes/*"],
       "@providers/*": ["src/providers/*"],
       "@routes/*": ["src/routes/*"],
