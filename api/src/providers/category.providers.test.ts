@@ -12,6 +12,7 @@ import {
   blacklistCategory,
 } from "./category.providers"
 
+// Mock the Redis client.
 jest.mock("@utils/redis")
 
 /**
