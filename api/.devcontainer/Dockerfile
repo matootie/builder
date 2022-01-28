@@ -15,4 +15,4 @@ RUN mkdir "/tmp/aws" && \
     ./aws/install
 
 # Install global NPM packages.
-RUN su node -c "npm install -g aws-cdk"
+RUN su node -c "npm install -g npm aws-cdk"
