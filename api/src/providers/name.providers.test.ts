@@ -8,6 +8,7 @@ import { redis } from "@utils/redis"
 // Test subject imports.
 import { pickName, addName, retireName } from "./name.providers"
 
+// Mock the Redis client.
 jest.mock("@utils/redis")
 
 /**
