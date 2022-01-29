@@ -50,6 +50,66 @@ export async function addName({
 }
 
 /**
+ * Reserve a name for the future.
+ */
+interface ReserveNameInput {
+  serverId: string
+  reservationId: string
+  name: string
+}
+export async function reserveName({
+  serverId,
+  reservationId,
+  name,
+}: ReserveNameInput): Promise<boolean> {
+  // Build the key.
+  const key = keyify(serverId, `reservation:${reservationId}`)
+  // Write the reservation to the database.
+  const result = await redis.set(key, name)
+  // Return whether or not the result was OK.
+  return result === "OK"
+}
+
+/**
+ * Get the name from a reservation.
+ */
+interface GetReservationNameInput {
+  serverId: string
+  reservationId: string
+}
+export async function getReservationName({
+  serverId,
+  reservationId,
+}: GetReservationNameInput): Promise<string | undefined> {
+  // Build the key.
+  const key = keyify(serverId, `reservation:${reservationId}`)
+  // Get the name.
+  const name = await redis.get(key)
+  // Return the result.
+  if (name === null) return
+  return name
+}
+
+/**
+ * Clear the reservation of a name.
+ */
+interface ClearReservedNameInput {
+  serverId: string
+  reservationId: string
+}
+export async function clearReservedName({
+  serverId,
+  reservationId,
+}: ClearReservedNameInput): Promise<boolean> {
+  // Build the key.
+  const key = keyify(serverId, `reservation:${reservationId}`)
+  // Clear the reservation.
+  const result = await redis.del(key)
+  // Return whether or not the delete was successful.
+  return result === 1
+}
+
+/**
  * Retire a name.
  */
 interface RetireNameInput {

@@ -3,7 +3,7 @@
  */
 
 // Provider imports.
-import { pickName, addName } from "@providers/name.providers"
+import { pickName, addName, reserveName } from "@providers/name.providers"
 
 // Utility imports.
 import { generateName } from "@utils/names"
@@ -13,12 +13,14 @@ import { generateName } from "@utils/names"
  */
 interface PickNameProcessInput {
   serverId: string
+  reservationId: string
 }
 interface PickNameProcessOutput {
   item: string
 }
 export async function pickNameProcess({
   serverId,
+  reservationId,
 }: PickNameProcessInput): Promise<PickNameProcessOutput> {
   // Pick a name.
   const { item } = await pickName({ serverId })
@@ -37,6 +39,8 @@ export async function pickNameProcess({
     // Return the generated, unique name.
     return { item: name }
   }
+  // Reserve the name.
+  await reserveName({ serverId, reservationId, name: item })
   // Return the picked name.
   return { item }
 }

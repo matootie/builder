@@ -31,6 +31,26 @@ export async function associateChannel({
 }
 
 /**
+ * Get the name of a channel.
+ */
+interface GetChannelNameInput {
+  serverId: string
+  channelId: string
+}
+export async function getChannelName({
+  serverId,
+  channelId,
+}: GetChannelNameInput): Promise<string | undefined> {
+  // Build the key.
+  const key = keyify(serverId, channelId)
+  // Get the associated name for the channel.
+  const result = await redis.get(key)
+  // Return the result.
+  if (result === null) return undefined
+  return result
+}
+
+/**
  * Disassociate a channel ID with a name.
  */
 interface DisassociateChannelInput {
