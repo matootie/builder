@@ -6,7 +6,14 @@
 import { redis } from "@utils/redis"
 
 // Test subject imports.
-import { pickName, addName, retireName } from "./name.providers"
+import {
+  pickName,
+  addName,
+  retireName,
+  reserveName,
+  clearReservedName,
+  getReservationName,
+} from "./name.providers"
 
 // Mock the Redis client.
 jest.mock("@utils/redis")
@@ -76,6 +83,78 @@ describe("When adding names...", () => {
     // Run the test subject function.
     const result = await addName({ serverId: "123", name: "Ooga Booga" })
     // Assert.
+    expect(result).toBe(true)
+  })
+})
+
+/**
+ * Test reserving names.
+ */
+describe("When reserving names...", () => {
+  it("...returns true when the name is reserved.", async () => {
+    // Fake an empty reservation.
+    let reservation: string | undefined
+    // Fake the reservation being set in the database.
+    redis.set = jest.fn().mockImplementation((_key, name) => {
+      reservation = name
+      return "OK"
+    })
+    // Run the test subject function.
+    const result = await reserveName({
+      serverId: "123",
+      reservationId: "123",
+      name: "Ooga Booga",
+    })
+    // Assert.
+    expect(reservation).toBeDefined()
+    expect(reservation).toBe("Ooga Booga")
+    expect(result).toBe(true)
+  })
+})
+
+/**
+ * Test getting reserved names.
+ */
+describe("When getting reserved names...", () => {
+  it("...returns the expected name.", async () => {
+    // Fake an existing reservation keyspace.
+    const keys = {
+      "123:reservation:123": "Ooga Booga",
+    }
+    // Fake getting the reservation from the database.
+    redis.get = jest.fn().mockImplementation((key) => {
+      return keys[key] || null
+    })
+    // Run the test subject function.
+    const result = await getReservationName({
+      serverId: "123",
+      reservationId: "123",
+    })
+    // Assert.
+    expect(result).toBeDefined()
+    expect(result).toBe("Ooga Booga")
+  })
+})
+
+/**
+ * Test clearing reservations for names.
+ */
+describe("When clearing reservations for names...", () => {
+  it("...returns true when the reserved name has been cleared.", async () => {
+    // Fake an existing reservation.
+    let reservation: string | undefined = "Ooga Booga"
+    // Fake removing the reservation in the database.
+    redis.del = jest.fn().mockImplementation(() => {
+      reservation = undefined
+      return 1
+    })
+    // Run the test subject function.
+    const result = await clearReservedName({
+      serverId: "123",
+      reservationId: "123",
+    })
+    // Assert.
+    expect(reservation).toBeUndefined()
     expect(result).toBe(true)
   })
 })
