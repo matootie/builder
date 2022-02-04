@@ -7,6 +7,7 @@ import express from "express"
 import cors from "cors"
 
 // Middleware imports.
+import { authMiddleware } from "@middlewares/auth.middlewares"
 import { errorMiddleware } from "@middlewares/error.middlewares"
 
 // Initialize the app.
@@ -21,6 +22,9 @@ app.use(
     origin: ["*"],
   }),
 )
+
+// Use the auth middleware.
+app.use(authMiddleware)
 
 // Use the error middleware.
 app.use(errorMiddleware)
