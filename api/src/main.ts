@@ -12,7 +12,7 @@ async function run() {
   // Do some pre-run async tasks.
 
   // Run the server.
-  app.listen(5000)
+  app.listen(3000)
 }
 
 // Run the application.

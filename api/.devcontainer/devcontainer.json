@@ -1,15 +1,11 @@
 {
-	"name": "Builder API",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "api",
-	"workspaceFolder": "/workspace",
-	"settings": {
-	},
-	"extensions": [
-		"esbenp.prettier-vscode",
-		"dbaeumer.vscode-eslint",
-	],
-	"forwardPorts": [5000, 6379],
-	"postCreateCommand": "npm i",
-	"remoteUser": "node"
+  "name": "Builder API",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "api",
+  "workspaceFolder": "/workspace",
+  "settings": {},
+  "extensions": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint"],
+  "forwardPorts": [3000, 6379],
+  "postCreateCommand": "npm i",
+  "remoteUser": "node"
 }
