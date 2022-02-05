@@ -10,6 +10,9 @@ import cors from "cors"
 import { authMiddleware } from "@middlewares/auth.middlewares"
 import { errorMiddleware } from "@middlewares/error.middlewares"
 
+// Route imports.
+import { categories } from "@routes/category.routes"
+
 // Initialize the app.
 export const app = express()
 
@@ -25,6 +28,9 @@ app.use(
 
 // Use the auth middleware.
 app.use(authMiddleware)
+
+// Use category routes.
+app.use("/servers/", categories)
 
 // Use the error middleware.
 app.use(errorMiddleware)
