@@ -49,10 +49,14 @@ export const authMiddleware = async (
   _res: Response,
   next: NextFunction,
 ) => {
-  // Check authorization and get metadata about the actor.
-  const actor = await checkAuth({ headers: req.headers })
-  // Bind the actor to the request context.
-  req.actor = actor
+  if (process.env.NODE_ENV === "production") {
+    // Check authorization and get metadata about the actor.
+    const actor = await checkAuth({ headers: req.headers })
+    // Bind the actor to the request context.
+    req.actor = actor
+  } else {
+    req.actor = { name: "Local User" }
+  }
   // Continue to the next handler.
   next()
 }
