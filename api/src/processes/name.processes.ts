@@ -30,7 +30,7 @@ export async function pickNameProcess({
     let name: string
     do {
       // Generate a name.
-      name = generateName()
+      name = await generateName()
       // Add it to the set of in-use names.
       // Here, if we get back false it means the name is already in use,
       // thus we need to generate a new one.

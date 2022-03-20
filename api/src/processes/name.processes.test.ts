@@ -43,7 +43,7 @@ describe("When picking a name...", () => {
   it("...generate and add a name if none to pick.", async () => {
     // Set up mocks.
     pickNameMock.mockResolvedValue({})
-    generateNameMock.mockReturnValue("Ooga")
+    generateNameMock.mockResolvedValue("Ooga")
     addNameMock.mockResolvedValue(true)
     reserveNameMock.mockResolvedValue(true)
     // Run the test subject function.
@@ -60,7 +60,7 @@ describe("When picking a name...", () => {
     // Set up mocks.
     pickNameMock.mockResolvedValue({})
     const names = ["Name1", "Name2", "Name3"]
-    generateNameMock.mockImplementation(() => {
+    generateNameMock.mockImplementation(async () => {
       return names.pop() ?? "Name"
     })
     const added = new Set(names)
