@@ -4,6 +4,7 @@
 
 // External imports.
 import { ErrorRequestHandler } from "express"
+import { StructError } from "superstruct"
 
 // Utility imports.
 import { HTTPError, ServerError } from "@utils/exceptions"
@@ -26,10 +27,7 @@ export function checkError({ error }: CheckErrorInput): CheckErrorOutput {
       message: error.message,
       error: error.error,
     }
-  } else if (
-    error.name === "StructError" ||
-    error.message?.startsWith("At path:")
-  ) {
+  } else if (error instanceof StructError) {
     return {
       status: 400,
       message: error.message,

@@ -55,6 +55,7 @@
     "express": "^5.0.0-alpha.8",
     "ioredis": "^4.28.3",
     "moniker": "^0.1.2",
-    "source-map-support": "^0.5.16"
+    "source-map-support": "^0.5.16",
+    "superstruct": "^0.15.4"
   }
 }

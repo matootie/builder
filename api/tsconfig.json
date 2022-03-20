@@ -22,6 +22,7 @@
       "@processes/*": ["src/processes/*"],
       "@providers/*": ["src/providers/*"],
       "@routes/*": ["src/routes/*"],
+      "@schemas/*": ["src/schemas/*"],
       "@utils/*": ["src/utils/*"]
     }
   },
