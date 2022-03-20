@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@vendia/serverless-express": "^4.5.2",
+    "axios": "^0.26.1",
     "constructs": "^10.0.0",
     "cors": "^2.8.5",
     "express": "^5.0.0-alpha.8",
