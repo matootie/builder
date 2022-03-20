@@ -13,6 +13,7 @@ import { errorMiddleware } from "@middlewares/error.middlewares"
 // Route imports.
 import { categories } from "@routes/category.routes"
 import { names } from "@routes/name.routes"
+import { channels } from "@routes/channel.routes"
 
 // Initialize the app.
 export const app = express()
@@ -30,9 +31,10 @@ app.use(
 // Use the auth middleware.
 app.use(authMiddleware)
 
-// Use category routes.
+// Use application routes.
 app.use("/servers", categories)
 app.use("/servers", names)
+app.use("/servers", channels)
 
 // Use the error middleware.
 app.use(errorMiddleware)
