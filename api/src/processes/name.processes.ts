@@ -36,6 +36,8 @@ export async function pickNameProcess({
       // thus we need to generate a new one.
       added = await addName({ serverId, name })
     } while (!added)
+    // Reserve the name.
+    await reserveName({ serverId, reservationId, name })
     // Return the generated, unique name.
     return { item: name }
   }
