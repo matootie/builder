@@ -23,6 +23,6 @@
       "@styles/*": ["styles/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "extra.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

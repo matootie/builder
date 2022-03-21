@@ -1,14 +1,19 @@
 import type { NextPage } from "next"
 import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
 
 const Home: NextPage = () => {
+  const router = useRouter()
   return (
-    <div>
+    <>
       <Head>
         <title>Builder</title>
       </Head>
-      <h1 className="text-7xl font-bold">Hello, Builder!</h1>
-    </div>
+      <div className="w-screen h-screen flex justify-center items-center">
+        <h1 className="text-7xl font-bold">Hello, Builder!</h1>
+      </div>
+    </>
   )
 }
 
