@@ -1,7 +1,9 @@
 declare namespace Express {
   export interface Request {
     actor: {
-      name?: string
+      id: string
+      permissions: string[]
+      system: boolean
     }
   }
 }

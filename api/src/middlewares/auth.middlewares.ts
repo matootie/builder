@@ -4,40 +4,77 @@
 
 // External imports.
 import { Request, Response, NextFunction } from "express"
+import { createRemoteJWKSet, jwtVerify } from "jose"
 
 // Utility imports.
 import { UnauthorizedError } from "@utils/exceptions"
+import { URL } from "url"
 import { IncomingHttpHeaders } from "http"
-import { redis } from "@utils/redis"
-import { keyify } from "@utils/keys"
 
-/**
- * Auth handler logic.
- */
+export interface Payload {
+  iss: string
+  sub: string
+  aud: string | string[]
+  iat: number
+  exp: number
+  azp: string
+  scope: string
+  gty?: "client-credentials" | string
+  permissions?: string[]
+}
+
+const keychain = {}
+
+export function extractPayload(jwt: string): Payload {
+  const payload = jwt.split(".")[1]
+  const payloadJSON = Buffer.from(payload, "base64").toString()
+  const result = JSON.parse(payloadJSON)
+  return result as Payload
+}
+
+async function verifySignature(jwt: string): Promise<Payload> {
+  try {
+    const payload = extractPayload(jwt)
+    const JWKS = createRemoteJWKSet(
+      new URL(`${payload.iss}.well-known/jwks.json`),
+    )
+    await jwtVerify(jwt, async (header, input) => {
+      const kid = header.kid
+      if (!kid) throw new UnauthorizedError("Malformed token.")
+      let key = keychain[payload.iss]?.[kid]
+      if (!key) {
+        key = await JWKS(header, input)
+        keychain[payload.iss] = {
+          ...keychain[payload.iss],
+          [kid]: key,
+        }
+      }
+      return key
+    })
+    return payload
+  } catch (error) {
+    throw new UnauthorizedError("Unable to verify token signature.")
+  }
+}
+
 interface CheckAuthInput {
   headers: IncomingHttpHeaders
 }
-interface CheckAuthOutput {
-  name?: string
-}
-export async function checkAuth({
-  headers,
-}: CheckAuthInput): Promise<CheckAuthOutput> {
-  // Get the API key from request headers.
-  const apiKey = headers["x-api-key"]
-  if (!apiKey) throw new UnauthorizedError("Missing X-API-KEY header.")
-  // Build the key.
-  const key = keyify("admin", apiKey)
-  // Validate that the API key exists in Redis.
-  const exists = await redis.exists(key)
-  if (exists === 0) throw new UnauthorizedError("Invalid API key.")
-  // Get the actor data.
-  const actor = await redis.hgetall(key)
-  // Increment the total request count.
-  await redis.hincrby(key, "requestCount", 1)
-  // Return relevant actor metadata.
+export async function checkAuth({ headers }: CheckAuthInput) {
+  const header = headers.authorization
+  if (!header || !header.startsWith("Bearer ")) {
+    throw new UnauthorizedError("Malformed Authorization header.")
+  }
+  const token = header.substring(7)
+  const payload = await verifySignature(token)
+  const userId = payload.sub.endsWith("@clients")
+    ? payload.sub.split("@")[0]
+    : payload.sub.split("|")[2]
+  const system = payload.sub.endsWith("@clients")
   return {
-    name: actor.name,
+    id: userId,
+    permissions: payload.permissions || [],
+    system,
   }
 }
 
@@ -55,7 +92,7 @@ export const authMiddleware = async (
     // Bind the actor to the request context.
     req.actor = actor
   } else {
-    req.actor = { name: "Local User" }
+    req.actor = { id: "localuser", permissions: ["*"], system: false }
   }
   // Continue to the next handler.
   next()
