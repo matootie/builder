@@ -6,6 +6,7 @@ export default auth0.handleAuth({
     await handleLogin(req, res, {
       authorizationParams: {
         connection: "discord",
+        audience: "builder",
       },
     })
   },
