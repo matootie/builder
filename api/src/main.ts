@@ -2,6 +2,9 @@
  * Main runner for development.
  */
 
+// External imports.
+import "dotenv/config"
+
 // Application imports.
 import { app } from "@app"
 
