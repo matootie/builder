@@ -72,6 +72,7 @@ export async function checkAuth({ headers }: CheckAuthInput) {
     : payload.sub.split("|")[2]
   const system = payload.sub.endsWith("@clients")
   return {
+    sub: payload.sub,
     id: userId,
     permissions: payload.permissions || [],
     system,
@@ -89,10 +90,20 @@ export const authMiddleware = async (
   if (process.env.NODE_ENV === "production") {
     // Check authorization and get metadata about the actor.
     const actor = await checkAuth({ headers: req.headers })
+    actor.permissions.push(
+      "manage:names",
+      "manage:categories",
+      "read:categories",
+    )
     // Bind the actor to the request context.
     req.actor = actor
   } else {
-    req.actor = { id: "localuser", permissions: ["*"], system: false }
+    req.actor = {
+      sub: "oauth2|discord|183731781994938369",
+      id: "183731781994938369",
+      permissions: ["*"],
+      system: false,
+    }
   }
   // Continue to the next handler.
   next()

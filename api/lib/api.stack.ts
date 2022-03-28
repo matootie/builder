@@ -26,6 +26,13 @@ export class ApiStack extends Stack {
       "Builder/Redis",
     )
 
+    // The configuration secrets.
+    const configSecrets = Secret.fromSecretNameV2(
+      this,
+      "ConfigSecrets",
+      "Builder/Config",
+    )
+
     // The AWS Lambda function.
     const handler = new Function(this, "Function", {
       runtime: Runtime.NODEJS_14_X,
@@ -33,6 +40,18 @@ export class ApiStack extends Stack {
       handler: "handler.handler",
       environment: {
         REDIS_URL: redisSecrets.secretValueFromJson("redisUrl").toString(),
+        AUTH0_CLIENT_ID: configSecrets
+          .secretValueFromJson("auth0ClientId")
+          .toString(),
+        AUTH0_CLIENT_SECRET: configSecrets
+          .secretValueFromJson("auth0ClientSecret")
+          .toString(),
+        DISCORD_CLIENT_ID: configSecrets
+          .secretValueFromJson("discordClientId")
+          .toString(),
+        DISCORD_CLIENT_SECRET: configSecrets
+          .secretValueFromJson("discordClientSecret")
+          .toString(),
       },
     })
 
