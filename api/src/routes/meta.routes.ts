@@ -5,7 +5,6 @@
 // External imports.
 import { system } from "@middlewares/system.middlewares"
 import { withDiscordContext } from "@utils/discord"
-import { NotFoundError } from "@utils/exceptions"
 import axios from "axios"
 import express from "express"
 
@@ -20,7 +19,7 @@ meta.get("/guilds", system({ expect: false }), async (req, res) => {
   const sub = req.actor.sub
 
   const response = await withDiscordContext({ sub }, async ({ token }) => {
-    const result = await axios({
+    return await axios({
       method: "GET",
       baseURL: "https://discord.com/api",
       url: "/users/@me/guilds",
@@ -29,13 +28,8 @@ meta.get("/guilds", system({ expect: false }), async (req, res) => {
       },
       validateStatus: null,
     })
-    return result.data
   })
 
-  if (!response) {
-    throw new NotFoundError()
-  }
-
   // Return it.
-  res.status(200).send(response)
+  res.status(response.status).send(response.data)
 })
