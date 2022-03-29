@@ -56,6 +56,14 @@ export class NotImplementedError extends HTTPError {
 }
 
 /**
+ * Too many requests error.
+ */
+export class TooManyRequestsError extends HTTPError {
+  status = 429
+  error = "You are being rate limited."
+}
+
+/**
  * Server error.
  */
 export class ServerError extends HTTPError {

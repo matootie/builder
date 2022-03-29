@@ -9,6 +9,7 @@ import FormData from "form-data"
 // Utility imports.
 import { redis } from "@utils/redis"
 import { ServerError } from "@utils/exceptions"
+import { URLSearchParams } from "url"
 
 /**
  * Fetch a management API token.
@@ -99,16 +100,18 @@ async function getDiscordTokenFromRefresh(
   oldToken: DiscordToken,
 ): Promise<DiscordToken | undefined> {
   try {
-    const form = new FormData()
-    form.append("client_id", process.env.DISCORD_CLIENT_ID)
-    form.append("client_secret", process.env.DISCORD_CLIENT_SECRET)
+    const form = new URLSearchParams()
+    form.append("client_id", process.env.DISCORD_CLIENT_ID || "")
+    form.append("client_secret", process.env.DISCORD_CLIENT_SECRET || "")
     form.append("grant_type", "refresh_token")
     form.append("refresh_token", oldToken.refreshToken)
     const response = await axios({
       method: "POST",
       baseURL: "https://discord.com/api",
       url: "/oauth2/token",
-      headers: form.getHeaders(),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
       data: form,
     })
     const accessToken = response.data.access_token

@@ -3,11 +3,14 @@
  */
 
 // External imports.
-import { system } from "@middlewares/system.middlewares"
-import { withDiscordContext } from "@utils/discord"
-import { NotFoundError } from "@utils/exceptions"
-import axios from "axios"
 import express from "express"
+
+// Middleware imports.
+import { system } from "@middlewares/system.middlewares"
+
+// Process imports.
+import { listOwnedGuilds } from "@processes/discord.processes"
+import { invalidateInCache } from "@utils/cache"
 
 // The router.
 export const meta = express.Router({ mergeParams: true })
@@ -18,24 +21,10 @@ export const meta = express.Router({ mergeParams: true })
 meta.get("/guilds", system({ expect: false }), async (req, res) => {
   // Localize parameters from request context.
   const sub = req.actor.sub
-
-  const response = await withDiscordContext({ sub }, async ({ token }) => {
-    const result = await axios({
-      method: "GET",
-      baseURL: "https://discord.com/api",
-      url: "/users/@me/guilds",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      validateStatus: null,
-    })
-    return result.data
-  })
-
-  if (!response) {
-    throw new NotFoundError()
-  }
-
+  // Invalidate any existing data in the cache.
+  await invalidateInCache({ key: `${sub}|guilds` })
+  // Retrieve data.
+  const { items: guilds } = await listOwnedGuilds({ sub })
   // Return it.
-  res.status(200).send(response)
+  res.status(200).send(guilds)
 })

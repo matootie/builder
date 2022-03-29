@@ -5,6 +5,10 @@
 // External imports.
 import express from "express"
 
+// Middleware imports.
+import { perms } from "@middlewares/permission.middlewares"
+import { owner } from "@middlewares/discord.middlewares"
+
 // Provider imports.
 import {
   blacklistCategory,
@@ -14,7 +18,6 @@ import {
 
 // Utility imports.
 import { NotFoundError } from "@utils/exceptions"
-import { perms } from "@middlewares/permission.middlewares"
 
 // The router.
 export const categories = express.Router({ mergeParams: true })
@@ -25,6 +28,7 @@ export const categories = express.Router({ mergeParams: true })
 categories.get(
   "/:serverId/categories/:categoryId",
   perms("read:categories"),
+  owner({ param: "serverId", location: "path" }),
   async (req, res) => {
     const whitelisted = await checkCategory({
       serverId: req.params.serverId,
@@ -41,6 +45,7 @@ categories.get(
 categories.put(
   "/:serverId/categories/:categoryId",
   perms("manage:categories"),
+  owner({ param: "serverId", location: "path" }),
   async (req, res) => {
     const changed = await whitelistCategory({
       serverId: req.params.serverId,
@@ -57,6 +62,7 @@ categories.put(
 categories.delete(
   "/:serverId/categories/:categoryId",
   perms("manage:categories"),
+  owner({ param: "serverId", location: "path" }),
   async (req, res) => {
     const changed = await blacklistCategory({
       serverId: req.params.serverId,
