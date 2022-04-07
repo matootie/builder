@@ -59,15 +59,6 @@ export class ApiStack extends Stack {
     new LambdaRestApi(this, "Endpoint", {
       handler,
       description: "Builder API.",
-      defaultCorsPreflightOptions: {
-        allowHeaders: ["Content-Type", "Authorization"],
-        allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
-        allowCredentials: true,
-        allowOrigins: [
-          "https://admin.builder.matootie.com",
-          "http://localhost:1234",
-        ],
-      },
     })
   }
 }
