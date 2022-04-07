@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  images: {
-    domains: ["tailwindui.com", "cdn.discordapp.com"],
+  async redirects() {
+    return [
+      {
+        source: "/admin",
+        destination: "https://admin.builder.matootie.com",
+        permanent: false,
+      },
+    ]
   },
 }
 

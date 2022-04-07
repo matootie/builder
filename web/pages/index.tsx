@@ -1,10 +1,17 @@
-import type { NextPage } from "next"
-import Head from "next/head"
-import Link from "next/link"
-import { useRouter } from "next/router"
+/**
+ * Home page.
+ */
 
+// Type imports.
+import type { NextPage } from "next"
+
+// External imports.
+import Head from "next/head"
+
+/**
+ * Home page functional React component.
+ */
 const Home: NextPage = () => {
-  const router = useRouter()
   return (
     <>
       <Head>
@@ -17,4 +24,5 @@ const Home: NextPage = () => {
   )
 }
 
+// Export the component.
 export default Home
