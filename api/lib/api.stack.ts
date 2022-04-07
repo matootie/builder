@@ -58,6 +58,16 @@ export class ApiStack extends Stack {
     // The AWS API Gateway for the function.
     new LambdaRestApi(this, "Endpoint", {
       handler,
+      description: "Builder API.",
+      defaultCorsPreflightOptions: {
+        allowHeaders: ["Content-Type", "Authorization"],
+        allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
+        allowCredentials: true,
+        allowOrigins: [
+          "https://admin.builder.matootie.com",
+          "http://localhost:1234",
+        ],
+      },
     })
   }
 }
