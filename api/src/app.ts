@@ -23,11 +23,9 @@ export const app = express()
 app.use(express.json())
 
 // Use the CORS middleware.
-app.use(
-  cors({
-    origin: ["*"],
-  }),
-)
+app.use(cors())
+// @ts-expect-error Missing typings.
+app.options("*", cors())
 
 // Use the auth middleware.
 app.use(authMiddleware)
