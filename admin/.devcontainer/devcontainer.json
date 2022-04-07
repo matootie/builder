@@ -1,0 +1,20 @@
+{
+  "name": "Builder Admin",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "settings": {},
+  "extensions": [
+    "esbenp.prettier-vscode",
+    "csstools.postcss",
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint"
+  ],
+  "forwardPorts": [1234],
+  "postCreateCommand": "npm i",
+  "remoteUser": "node",
+  "features": {
+    "git": "latest",
+    "git-lfs": "latest"
+  }
+}
