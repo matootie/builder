@@ -15,6 +15,7 @@ import { categories } from "@routes/category.routes"
 import { names } from "@routes/name.routes"
 import { channels } from "@routes/channel.routes"
 import { meta } from "@routes/meta.routes"
+import { guilds } from "@routes/guild.routes"
 
 // Initialize the app.
 export const app = express()
@@ -24,14 +25,14 @@ app.use(express.json())
 
 // Use the CORS middleware.
 app.use(cors())
-// @ts-expect-error Missing typings.
-app.options("*", cors())
+app.options("*", (_req, res) => res.status(204).send())
 
 // Use the auth middleware.
 app.use(authMiddleware)
 
 // Use application routes.
 app.use("/", meta)
+app.use("/servers", guilds)
 app.use("/servers", categories)
 app.use("/servers", names)
 app.use("/servers", channels)
