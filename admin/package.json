@@ -1,7 +1,7 @@
 {
   "name": "builder-admin",
   "scripts": {
-    "start": "parcel serve ./src/index.html",
+    "develop": "parcel serve ./src/index.html",
     "build": "parcel build ./src/index.html"
   },
   "alias": {
