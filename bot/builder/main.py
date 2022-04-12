@@ -27,15 +27,8 @@ def app():
         return
     logging.debug("Token is %s", token)
 
-    # Assert the Redis URL variable.
-    try:
-        redis_url = os.environ["REDIS_URL"]
-    except KeyError:
-        logging.error("You must specify the Redis URL under REDIS_URL.")
-    logging.debug("Redis URL is %s", redis_url)
-
     # Initialize the bot.
-    bot = Builder(redis_url=redis_url)
+    bot = Builder()
 
     # Run the bot.
     bot.run(token)
