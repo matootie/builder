@@ -40,7 +40,7 @@ export const Layout: FC = ({ children }) => {
     data: servers,
   } = useQuery<Guild[]>("serverData", async () => {
     const token = await getAccessToken()
-    const response = await fetch("http://localhost:3001/guilds", {
+    const response = await fetch(`${process.env.API_BASE_URL}/guilds`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
