@@ -94,6 +94,7 @@ export const authMiddleware = async (
       "manage:names",
       "manage:categories",
       "read:categories",
+      "read:guilds",
     )
     // Bind the actor to the request context.
     req.actor = actor
