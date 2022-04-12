@@ -42,7 +42,7 @@ export default function Settings({ guild }: SettingsProps) {
     async () => {
       const token = await getAccessToken()
       const response = await fetch(
-        `http://localhost:3001/servers/${serverId}`,
+        `${process.env.API_BASE_URL}/servers/${serverId}`,
         {
           headers: {
             "Content-Type": "application/json",
