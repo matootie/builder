@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VARIANT: 16-bullseye
+    init: true
+    volumes:
+      - ..:/workspace:cached
+      - $HOME/.aws/credentials:/home/node/.aws/credentials:ro
+      - $HOME/.aws/config:/home/node/.aws/config:ro
+    command: sleep infinity
+    network_mode: service:redis
+    environment:
+      REDIS_URL: redis://localhost:6379
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    hostname: app
+    volumes:
+      - data:/data
+volumes:
+  data: null
