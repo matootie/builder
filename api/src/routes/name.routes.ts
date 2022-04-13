@@ -6,10 +6,17 @@
 import express from "express"
 
 // Process imports.
-import { pickNameProcess } from "@processes/name.processes"
+import {
+  listCustomNamesProcess,
+  pickNameProcess,
+} from "@processes/name.processes"
 
 // Provider imports.
-import { getReservationName } from "@providers/name.providers"
+import {
+  addCustomName,
+  getReservationName,
+  removeCustomName,
+} from "@providers/name.providers"
 import { perms } from "@middlewares/permission.middlewares"
 
 // The router.
@@ -52,3 +59,44 @@ names.get(
     }
   },
 )
+
+/**
+ * Add a custom name.
+ */
+names.put("/:serverId/names/:name", perms("manage:names"), async (req, res) => {
+  const serverId = req.params.serverId
+  const name = req.params.name
+  const result = await addCustomName({ serverId, name })
+  if (result) {
+    res.status(200).send({ message: "ADDED" })
+  } else {
+    res.status(200).send({ message: "UNCHANGED" })
+  }
+})
+
+/**
+ * Remove a custom name.
+ */
+names.delete(
+  "/:serverId/names/:name",
+  perms("manage:names"),
+  async (req, res) => {
+    const serverId = req.params.serverId
+    const name = req.params.name
+    const result = await removeCustomName({ serverId, name })
+    if (result) {
+      res.status(200).send({ message: "REMOVED" })
+    } else {
+      res.status(200).send({ message: "UNCHANGED" })
+    }
+  },
+)
+
+/**
+ * List custom names.
+ */
+names.get("/:serverId/names", perms("manage:names"), async (req, res) => {
+  const serverId = req.params.serverId
+  const result = await listCustomNamesProcess({ serverId })
+  res.status(200).send(result)
+})

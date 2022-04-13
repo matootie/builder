@@ -126,3 +126,96 @@ export async function retireName({
   // Move the name to the set of usable names.
   await redis.smove(inuse, usable, name)
 }
+
+/**
+ * Check if a name is in use.
+ */
+interface CheckNameInUseInput {
+  serverId: string
+  name: string
+}
+export async function checkNameInUse({
+  serverId,
+  name,
+}: CheckNameInUseInput): Promise<boolean> {
+  // Build the keys.
+  const key = keyify(serverId, "names:inuse")
+  // Check if the name exists in the set of used names.
+  const response = await redis.sismember(key, name)
+  // Return.
+  return response === 1
+}
+
+/**
+ * Add a custom name.
+ */
+interface AddCustomNameInput {
+  serverId: string
+  name: string
+}
+export async function addCustomName({
+  serverId,
+  name,
+}: AddCustomNameInput): Promise<boolean> {
+  // Build the keys.
+  const customs = keyify(serverId, "names:custom")
+  const usable = keyify(serverId, "names:usable")
+  // Add the names.
+  const response = await redis.sadd(customs, name)
+  const added = response === 1
+  if (added) await redis.sadd(usable, name)
+  // Return.
+  return added
+}
+
+/**
+ * Remove a custom name.
+ */
+interface RemoveCustomNameInput {
+  serverId: string
+  name: string
+}
+export async function removeCustomName({
+  serverId,
+  name,
+}: RemoveCustomNameInput): Promise<boolean> {
+  // Build the keys.
+  const customs = keyify(serverId, "names:custom")
+  const inuse = keyify(serverId, "names:inuse")
+  const usable = keyify(serverId, "names:usable")
+  // Remove the names.
+  const response = await redis.srem(customs, name)
+  const removed = response === 1
+  if (removed) {
+    await redis.srem(inuse, name)
+    await redis.srem(usable, name)
+  }
+  // Return.
+  return removed
+}
+
+/**
+ * List custom names.
+ */
+interface ListCustomNamesInput {
+  serverId: string
+  cursor?: string
+}
+interface ListCustomNamesOutput {
+  items: string[]
+  cursor?: string
+}
+export async function listCustomNames({
+  serverId,
+  cursor,
+}: ListCustomNamesInput): Promise<ListCustomNamesOutput> {
+  // Build the key.
+  const customs = keyify(serverId, "names:custom")
+  // List items.
+  const [newCursor, names] = await redis.sscan(customs, cursor ?? 0)
+  // Return.
+  return {
+    items: names,
+    cursor: newCursor || undefined,
+  }
+}

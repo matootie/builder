@@ -3,7 +3,13 @@
  */
 
 // Provider imports.
-import { pickName, addName, reserveName } from "@providers/name.providers"
+import {
+  pickName,
+  addName,
+  reserveName,
+  listCustomNames,
+  checkNameInUse,
+} from "@providers/name.providers"
 
 // Utility imports.
 import { generateName } from "@utils/names"
@@ -45,4 +51,36 @@ export async function pickNameProcess({
   await reserveName({ serverId, reservationId, name: item })
   // Return the picked name.
   return { item }
+}
+
+/**
+ * List custom names process.
+ *
+ * Lists names and also checks if names are in use.
+ */
+interface ListCustomNamesProcessInput {
+  serverId: string
+  cursor?: string
+}
+interface ListCustomNamesProcessOutput {
+  items: { name: string; inuse: boolean }[]
+  cursor?: string
+}
+export async function listCustomNamesProcess({
+  serverId,
+  cursor,
+}: ListCustomNamesProcessInput): Promise<ListCustomNamesProcessOutput> {
+  const { items, cursor: newCursor } = await listCustomNames({
+    serverId,
+    cursor,
+  })
+  const results: { name: string; inuse: boolean }[] = []
+  for (const name of items) {
+    const inuse = await checkNameInUse({ serverId, name })
+    results.push({ name, inuse })
+  }
+  return {
+    items: results,
+    cursor: newCursor,
+  }
 }
