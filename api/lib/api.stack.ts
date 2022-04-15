@@ -52,6 +52,9 @@ export class ApiStack extends Stack {
         DISCORD_CLIENT_SECRET: configSecrets
           .secretValueFromJson("discordClientSecret")
           .toString(),
+        DISCORD_TOKEN: configSecrets
+          .secretValueFromJson("discordToken")
+          .toString(),
       },
     })
 
