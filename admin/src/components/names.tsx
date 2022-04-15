@@ -51,7 +51,7 @@ export default function Names({ serverId }: NamesProps) {
 
   if (data) {
     return (
-      <div className="px-2 sm:px-4 lg:px-8 max-w-4xl mx-auto">
+      <div className="px-2 sm:px-4 lg:px-8 max-w-4xl mx-auto my-10">
         <div className="pb-5 border-b border-gray-200 flex justify-between items-end">
           <div>
             <h3 className="text-lg leading-6 font-medium text-gray-900">
