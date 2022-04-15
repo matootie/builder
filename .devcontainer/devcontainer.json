@@ -7,7 +7,11 @@
   "extensions": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "skyapps.fish-vscode",
+    "csstools.postcss",
+    "ms-azuretools.vscode-docker",
+    "ms-python.python"
   ],
   "forwardPorts": [3000, 3001, 1234, 6379],
   "remoteUser": "node",
@@ -16,7 +20,6 @@
     "git-lfs": "latest",
     "github-cli": "latest",
     "aws-cli": "latest",
-    "fish": "latest",
     "python": "3.10"
   }
 }
