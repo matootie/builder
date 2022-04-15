@@ -14,6 +14,12 @@ import Warning from "@components/warning"
 // Utility imports.
 import { useUser } from "@utils/auth"
 import Names from "@components/names"
+import Categories from "@components/categories"
+
+function getDiscordInviteURL() {
+  const appId = process.env.DISCORD_CLIENT_ID || "933497162183082077"
+  return `https://discord.com/api/oauth2/authorize?client_id=${appId}&permissions=16&scope=bot`
+}
 
 /**
  * Settings page functional React component.
@@ -65,7 +71,11 @@ export default function Settings({ guild }: SettingsProps) {
             <p>
               None of these changes will affect anything until the bot is added
               to this server.{" "}
-              <a href="https://www.github.com/matootie" className="underline">
+              <a
+                href={getDiscordInviteURL()}
+                target="_blank"
+                className="underline"
+              >
                 You can invite the chatbot by clicking here!
               </a>
             </p>
@@ -103,6 +113,8 @@ export default function Settings({ guild }: SettingsProps) {
       </div>
       {/* Name settings */}
       <Names serverId={guild.id} />
+      {/* Category settings */}
+      <Categories serverId={guild.id} />
     </>
   )
 }
