@@ -39,6 +39,7 @@ export class ApiStack extends Stack {
       code: Code.fromAsset(props?.codeZipLocation ?? "out/function.zip"),
       handler: "handler.handler",
       environment: {
+        NODE_ENV: "production",
         REDIS_URL: redisSecrets.secretValueFromJson("redisUrl").toString(),
         AUTH0_CLIENT_ID: configSecrets
           .secretValueFromJson("auth0ClientId")

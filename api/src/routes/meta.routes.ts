@@ -22,7 +22,9 @@ meta.get("/guilds", system({ expect: false }), async (req, res) => {
   // Localize parameters from request context.
   const sub = req.actor.sub
   // Invalidate any existing data in the cache.
-  await invalidateInCache({ key: `${sub}|guilds` })
+  if (process.env.NODE_ENV === "production") {
+    await invalidateInCache({ key: `${sub}|guilds` })
+  }
   // Retrieve data.
   const { items: guilds } = await listOwnedGuilds({ sub })
   // Return it.
