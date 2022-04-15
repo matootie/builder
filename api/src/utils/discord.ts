@@ -4,7 +4,6 @@
 
 // External imports.
 import axios from "axios"
-import FormData from "form-data"
 
 // Utility imports.
 import { redis } from "@utils/redis"
@@ -223,4 +222,18 @@ export async function withDiscordContext<T>(
     const response = await func({ token: newToken.accessToken })
     return response
   }
+}
+
+interface WithDiscordSystemContextFunctionOptions {
+  token: string
+}
+export async function withDiscordSystemContext<T>(
+  func: (options: WithDiscordSystemContextFunctionOptions) => Promise<T>,
+): Promise<T> {
+  const token = process.env.DISCORD_TOKEN
+  if (!token) {
+    throw new ServerError("Failed to retrieve system token for Discord.")
+  }
+  const response = await func({ token })
+  return response
 }

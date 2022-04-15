@@ -11,9 +11,9 @@ import { redis } from "@utils/redis"
 interface GetFromCacheInput {
   key: string
 }
-export async function getFromCache({
+export async function getFromCache<T = object>({
   key,
-}: GetFromCacheInput): Promise<object | undefined> {
+}: GetFromCacheInput): Promise<T | undefined> {
   const value = await redis.get(`cache:${key}`)
   if (!value) return
   return JSON.parse(value)

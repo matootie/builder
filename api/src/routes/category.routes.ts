@@ -9,6 +9,9 @@ import express from "express"
 import { perms } from "@middlewares/permission.middlewares"
 import { owner } from "@middlewares/discord.middlewares"
 
+// Process imports.
+import { listCategoriesProcess } from "@processes/category.processes"
+
 // Provider imports.
 import {
   blacklistCategory,
@@ -21,6 +24,20 @@ import { NotFoundError } from "@utils/exceptions"
 
 // The router.
 export const categories = express.Router({ mergeParams: true })
+
+/**
+ * List categories in a server.
+ */
+categories.get(
+  "/:serverId/categories",
+  perms("read:categories"),
+  owner({ param: "serverId", location: "path" }),
+  async (req, res) => {
+    const serverId = req.params.serverId
+    const categories = await listCategoriesProcess({ serverId })
+    res.status(200).send(categories)
+  },
+)
 
 /**
  * Get a category from the whitelist.
