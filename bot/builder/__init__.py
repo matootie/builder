@@ -1,8 +1,10 @@
 """Module entrypoint.
 """
 
+# System imports.
 import logging
 
+# External imports.
 from discord.ext.commands import Bot
 from discord.ext.commands import when_mentioned
 from discord.ext.commands import CommandNotFound
