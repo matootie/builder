@@ -51,21 +51,52 @@ export default function Settings({ guild }: SettingsProps) {
     },
   )
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   if (error) {
     console.error(error)
     return <ErrorComponent />
   }
 
+  function heading() {
+    if (!!data && !isLoading) {
+      return (
+        <>
+          Using Builder integration since{" "}
+          <time dateTime={new Date(parseInt(data.date)).toISOString()}>
+            {new Date(parseInt(data.date)).toLocaleDateString()}.
+          </time>
+        </>
+      )
+    } else if (!data && isLoading) {
+      return <>Loading...</>
+    } else {
+      return <>Not currently using Builder integration.</>
+    }
+  }
+
   return (
     <>
+      {/* Heading */}
+      <div className="md:flex md:items-center md:justify-between md:space-x-5 mt-6 mb-10 xl:mb-16 mx-auto max-w-5xl">
+        <div className="flex items-start space-x-5">
+          <div className="flex-shrink-0">
+            <div className="relative">
+              <img className="h-16 w-16 rounded-full" src={guild.icon} alt="" />
+              <span
+                className="absolute inset-0 shadow-inner rounded-full"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+          <div className="pt-1.5">
+            <h1 className="text-2xl font-bold text-gray-900">{guild.name}</h1>
+            <p className="text-sm font-medium text-gray-500">{heading()}</p>
+          </div>
+        </div>
+      </div>
       {/* Warning, if not joined */}
-      {!data && (
+      {!isLoading && !data && (
         <Warning
-          className="mb-4"
+          className="mb-4 max-w-4xl mx-auto"
           heading="The Builder chatbot is not in this server."
           body={
             <p>
@@ -82,35 +113,6 @@ export default function Settings({ guild }: SettingsProps) {
           }
         />
       )}
-      {/* Heading */}
-      <div className="md:flex md:items-center md:justify-between md:space-x-5 mt-6 mb-10 xl:mb-16 mx-auto max-w-5xl">
-        <div className="flex items-start space-x-5">
-          <div className="flex-shrink-0">
-            <div className="relative">
-              <img className="h-16 w-16 rounded-full" src={guild.icon} alt="" />
-              <span
-                className="absolute inset-0 shadow-inner rounded-full"
-                aria-hidden="true"
-              />
-            </div>
-          </div>
-          <div className="pt-1.5">
-            <h1 className="text-2xl font-bold text-gray-900">{guild.name}</h1>
-            <p className="text-sm font-medium text-gray-500">
-              {!!data ? (
-                <>
-                  Using Builder integration since{" "}
-                  <time dateTime={new Date(parseInt(data.date)).toISOString()}>
-                    {new Date(parseInt(data.date)).toLocaleDateString()}.
-                  </time>
-                </>
-              ) : (
-                <>Not currently using Builder integration.</>
-              )}
-            </p>
-          </div>
-        </div>
-      </div>
       {/* Name settings */}
       <Names serverId={guild.id} />
       {/* Category settings */}

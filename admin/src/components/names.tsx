@@ -26,59 +26,78 @@ interface NamesProps {
 export default function Names({ serverId }: NamesProps) {
   const { getAccessToken } = useUser()
 
-  const { data, error } = useQuery<{ name: string; inuse: boolean }[]>(
-    `customNames${serverId}`,
-    async () => {
-      const token = await getAccessToken()
-      const response = await fetch(
-        `${process.env.API_BASE_URL}/servers/${serverId}/names`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+  const { data, isLoading, error } = useQuery<
+    { name: string; inuse: boolean }[]
+  >(`customNames${serverId}`, async () => {
+    const token = await getAccessToken()
+    const response = await fetch(
+      `${process.env.API_BASE_URL}/servers/${serverId}/names`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      )
-      const result = await response.json()
-      return result.items
-    },
-  )
+      },
+    )
+    const result = await response.json()
+    return result.items
+  })
 
   if (error) {
     console.error(error)
     return <ErrorComponent />
   }
 
-  if (data) {
-    return (
-      <div className="px-2 sm:px-4 lg:px-8 max-w-4xl mx-auto my-10">
-        <div className="pb-5 border-b border-gray-200 flex justify-between items-end">
-          <div>
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Names
-            </h3>
-            <p className="mt-2 max-w-4xl text-sm text-gray-500">
-              Choose custom names for the integration to use when creating new
-              channels.
-            </p>
-          </div>
+  function namesList() {
+    // If the data is available and not loading.
+    if (!!data && !isLoading) {
+      return (
+        <>
+          {data.map(({ name }) => (
+            <NameButton key={name} serverId={serverId} name={name} />
+          ))}
+          {data.length < MAX_NAMES && <NewNameButton serverId={serverId} />}
+        </>
+      )
+    }
+    // If the data is unavailable but loading.
+    else {
+      return (
+        <>
+          {[...Array(1)].map((_v, index) => (
+            <li
+              key={index}
+              className="border border-black border-opacity-0 rounded-md px-2 py-4 md:py-3 bg-gray-100 text-gray-700 font-semibold shadow-sm group flex flex-row justify-between items-center h-14 animate-pulse odd:delay-75"
+            ></li>
+          ))}
+        </>
+      )
+    }
+  }
+
+  return (
+    <div className="px-2 sm:px-4 lg:px-8 max-w-4xl mx-auto my-10">
+      <div className="pb-5 border-b border-gray-200 flex justify-between items-end">
+        <div>
+          <h3 className="text-lg leading-6 font-medium text-gray-900">Names</h3>
+          <p className="mt-2 max-w-4xl text-sm text-gray-500">
+            Choose custom names for the integration to use when creating new
+            channels.
+          </p>
+        </div>
+        {!!data && !isLoading && (
           <div className="text-gray-500">
             <span>{data.length}</span>/<span>{MAX_NAMES}</span>
           </div>
-        </div>
-        <div className="mt-4">
-          <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-4">
-            {data.map(({ name }) => (
-              <NameButton key={name} serverId={serverId} name={name} />
-            ))}
-            {data.length < MAX_NAMES && <NewNameButton serverId={serverId} />}
-          </ul>
-        </div>
+        )}
       </div>
-    )
-  }
-
-  return <Loading />
+      <div className="mt-4">
+        <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-4">
+          {namesList()}
+        </ul>
+      </div>
+    </div>
+  )
 }
 
 interface NameButtonProps {
@@ -113,14 +132,14 @@ function NameButton({ serverId, name }: NameButtonProps) {
   )
   if (isLoading) {
     return (
-      <li className="border border-black border-opacity-0 rounded-md px-2 py-4 md:py-3 bg-gray-100 text-gray-500 font-semibold relative group">
+      <li className="border border-black border-opacity-0 rounded-md px-2 py-4 md:py-3 bg-gray-100 text-gray-500 font-semibold relative group truncate">
         {name}
       </li>
     )
   }
   return (
-    <li className="border border-black border-opacity-5 rounded-md px-2 py-4 md:py-3 bg-gray-100 text-gray-700 font-semibold shadow-sm group flex flex-row justify-between items-center">
-      <span>{name}</span>
+    <li className="border border-black border-opacity-0 rounded-md px-2 py-4 md:py-3 bg-gray-100 text-gray-700 font-semibold shadow-sm group flex flex-row justify-between items-center h-14">
+      <span className="truncate">{name}</span>
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="bg-gray-100 rounded-full flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-0 z-0">
@@ -305,7 +324,7 @@ function NewNameButton({ serverId }: NewNameButtonProps) {
       <li>
         <button
           type="button"
-          className="relative flex w-full border-2 border-gray-300 group border-dashed rounded-lg px-2 py-4 md:py-3 text-left hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-gray-700 font-semibold"
+          className="relative flex w-full border-2 border-gray-300 group border-dashed rounded-lg px-2 py-4 md:py-3 text-left hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 text-gray-700 font-semibold h-14 items-center"
           onClick={() => setIsOpen(true)}
         >
           <PlusIcon className="bg-gray-300 group-hover:bg-green-500 text-gray-700 group-hover:text-gray-50 p-1 rounded-md w-6 h-6 mr-2" />
