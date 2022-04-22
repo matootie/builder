@@ -24,83 +24,105 @@ interface NamesProps {
 export default function Categories({ serverId }: NamesProps) {
   const { getAccessToken } = useUser()
 
-  const { data, error } = useQuery<
-    { id: string; name: string; enabled: boolean }[]
-  >(`categories${serverId}`, async () => {
-    const token = await getAccessToken()
-    const response = await fetch(
-      `${process.env.API_BASE_URL}/servers/${serverId}/categories`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+  interface Category {
+    id: string
+    name: string
+    enabled: boolean
+  }
+  const { data, isLoading, error } = useQuery<Category[]>(
+    `categories${serverId}`,
+    async () => {
+      const token = await getAccessToken()
+      const response = await fetch(
+        `${process.env.API_BASE_URL}/servers/${serverId}/categories`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      },
-    )
-    const result = await response.json()
-    return result.items
-  })
+      )
+      const result = await response.json()
+      return result.items
+    },
+  )
 
-  if (error) {
-    console.error(error)
-    return <ErrorComponent />
+  function categoriesLoading(count: number = 1) {
+    const empties = [...Array(count)]
+    return (
+      <>
+        {empties.map((_value, index) => (
+          <div
+            key={index}
+            className="bg-gray-50 px-4 py-4 h-14 animate-pulse odd:delay-75 odd:bg-gray-100 rounded-lg"
+          ></div>
+        ))}
+      </>
+    )
   }
 
-  if (data) {
+  function categoriesList(data: Category[]) {
     return (
-      <div className="px-2 sm:px-4 lg:px-8 max-w-4xl mx-auto my-10">
-        <div className="pb-5 border-b border-gray-200 flex justify-between items-end">
-          <div>
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Categories
-            </h3>
-            <p className="mt-2 max-w-4xl text-sm text-gray-500">
-              Control which channel categories the integration will be enabled
-              for.
-            </p>
-          </div>
-        </div>
-        <div className="mt-4 flex flex-col space-y-4">
-          {data.length > 0 ? (
-            <>
-              {data.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-gray-50 px-4 py-4 odd:bg-gray-100 rounded-lg"
-                >
-                  <div
-                    className={classNames(
-                      "flex justify-between items-center",
-                      item.enabled ? "mb-4" : "mb-auto",
-                    )}
-                  >
-                    <span className="text-gray-700 font-semibold">
-                      {item.name}
-                    </span>
-                    <CategorySwitch
-                      serverId={serverId}
-                      categoryId={item.id}
-                      enabled={item.enabled}
-                    />
-                  </div>
-                  {item.enabled && <CategoryOptions />}
-                </div>
-              ))}
-            </>
-          ) : (
-            <div className="p-8 text-center">
-              <span className="text-sm text-gray-500 italic">
-                Failed to fetch categories. The bot is likely not added to the
-                server.
+      <>
+        {data.map((item) => (
+          <div
+            key={item.id}
+            className="bg-gray-50 px-4 py-4 odd:bg-gray-100 rounded-lg"
+          >
+            <div
+              className={classNames(
+                "flex justify-between items-center",
+                item.enabled ? "mb-4" : "mb-auto",
+              )}
+            >
+              <span className="text-gray-700 font-semibold truncate">
+                {item.name}
               </span>
+              <CategorySwitch
+                serverId={serverId}
+                categoryId={item.id}
+                enabled={item.enabled}
+              />
             </div>
-          )}
-        </div>
+            {item.enabled && <CategoryOptions />}
+          </div>
+        ))}
+      </>
+    )
+  }
+
+  function categoriesEmpty() {
+    return (
+      <div className="p-8 text-center">
+        <span className="text-sm text-gray-500 italic">
+          Failed to fetch categories. The bot is likely not added to the server.
+        </span>
       </div>
     )
   }
 
-  return <Loading />
+  function showCategories() {
+    if (!data && isLoading) return categoriesLoading()
+    else if (data && data.length > 0) return categoriesList(data)
+    else return categoriesEmpty()
+  }
+
+  return (
+    <div className="px-2 sm:px-4 lg:px-8 max-w-4xl mx-auto my-10">
+      <div className="pb-5 border-b border-gray-200 flex justify-between items-end">
+        <div>
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            Categories
+          </h3>
+          <p className="mt-2 max-w-4xl text-sm text-gray-500">
+            Control which channel categories the integration will be enabled
+            for.
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 flex flex-col space-y-4">{showCategories()}</div>
+    </div>
+  )
 }
 
 interface CategorySwitchProps {
@@ -114,7 +136,7 @@ function CategorySwitch({
   enabled,
 }: CategorySwitchProps) {
   const { getAccessToken } = useUser()
-  const { mutate } = useMutation(
+  const { mutate, isLoading } = useMutation(
     async () => {
       const token = await getAccessToken()
       await fetch(
@@ -138,9 +160,10 @@ function CategorySwitch({
     <Switch
       checked={enabled}
       onChange={() => mutate()}
+      disabled={isLoading}
       className={classNames(
         enabled ? "bg-green-600" : "bg-gray-200",
-        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500",
+        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-70 disabled:animate-pulse",
       )}
     >
       <span className="sr-only">Use setting</span>
@@ -195,7 +218,6 @@ function CategorySwitch({
   )
 }
 
-interface CategoryOptionsProps {}
 function CategoryOptions() {
   return (
     <div className="p-8 text-center">

@@ -23,23 +23,25 @@ import "@styles"
  */
 const App: FC = (): JSX.Element => {
   return (
-    <Auth0Provider
-      domain="discordbuilder.us.auth0.com"
-      clientId="5RzfKYvG40PgXWJwRzFQC25PED431PwS"
-      redirectUri={window.location.origin}
-      connection="discord"
-      audience="builder"
-      useRefreshTokens={true}
-      cacheLocation="localstorage"
-    >
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <Layout />
-          </Router>
-        </QueryClientProvider>
-      </AuthProvider>
-    </Auth0Provider>
+    <React.StrictMode>
+      <Auth0Provider
+        domain="discordbuilder.us.auth0.com"
+        clientId="5RzfKYvG40PgXWJwRzFQC25PED431PwS"
+        redirectUri={window.location.origin}
+        connection="discord"
+        audience="builder"
+        useRefreshTokens={true}
+        cacheLocation="localstorage"
+      >
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <Router>
+              <Layout />
+            </Router>
+          </QueryClientProvider>
+        </AuthProvider>
+      </Auth0Provider>
+    </React.StrictMode>
   )
 }
 
