@@ -57,7 +57,7 @@
     "express": "^5.0.0-alpha.8",
     "form-data": "^4.0.0",
     "ioredis": "^4.28.3",
-    "jose": "^4.6.0",
+    "jose": "^4.9.2",
     "moniker": "^0.1.2",
     "source-map-support": "^0.5.16",
     "superstruct": "^0.15.4"
